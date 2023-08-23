@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest
 from api.models import Task, User
 
@@ -8,7 +8,7 @@ def index(request):
 
 def users(request):
     if request.method != "GET":
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest("Expected GET request")
     
     users = User.objects.all()
 
@@ -16,7 +16,7 @@ def users(request):
 
 def tasks(request, user_id):
     if request.method != "GET":
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest("Expected GET request")
     
     tasks = Task.objects.get(user=user_id)
     
@@ -24,11 +24,15 @@ def tasks(request, user_id):
 
 def add_task(request, user_id):
     if request.method != "POST":
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest("Expected POST request")
     
-    print(request.body)
+    user = get_object_or_404(User, pk=user_id)
+    
+    title = request.POST["title"]
+    if title == None:
+        return HttpResponseBadRequest("Missing title from request body")
 
-    task = Task(user=user_id, title=request.body["title"])
+    task = Task(user=user, title=title)
     task.save()
     
     return HttpResponse()
