@@ -7,3 +7,6 @@ start-backend:
 install:
 	pip install -r requirements.txt
 	cd frontend && npm install
+
+migrations:
+	cd backend && python3 manage.py migrate
