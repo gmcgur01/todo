@@ -1,10 +1,20 @@
-export function getCookie(name: string): string {
+export function getCookie(name: string): string | null {
     const cookies = document.cookie.split("; ");
     for (let cookie of cookies) {
         if (cookie.startsWith(name)) {
             return cookie.split("=")[1];
         }
     }
+    return null;
+}
 
-    throw new Error(`Cookie with name ${name} not found.`)
+export function setCookie(name: string, value: string, exdays?: number) {
+    let cookie = name + "=" + value + ";"
+    if (exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + d.toUTCString() + ";";
+        cookie += expires;
+    }
+    document.cookie = cookie;
 }

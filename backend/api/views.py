@@ -6,13 +6,14 @@ from api.models import Task, User
 def index(request):
     return HttpResponse("Hello, world!")
 
-def users(request):
+def new_user(request):
     if request.method != "GET":
         return HttpResponseBadRequest("Expected GET request")
     
-    users = User.objects.all()
-
-    return HttpResponse(", ".join([str({"id" : u.pk, "user_name" : u.user_name}) for u in users]))
+    u = User()
+    u.save()
+    
+    return HttpResponse(u.pk)
 
 def tasks(request, user_id):
     if request.method != "GET":

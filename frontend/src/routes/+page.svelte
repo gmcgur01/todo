@@ -1,20 +1,37 @@
 <script>
-    import { getCookie } from "./+server";
+    import { setCookie, getCookie } from "./+server";
+    import { onMount } from "svelte";
 
     let text = "";
 
-    async function handleClick () {
-        let body = new FormData();
-        body.append("title", "Finish todo app");
+    onMount(async () => {
+        let userId = getCookie("userId");
+        if (userId === null) {
+            const res = await fetch("/api/new-user/");
+            if (res.status === 200) {
+                userId = await res.text();
+            } else {
+                console.error("Error getting new user.");
+                userId = "No ID found!";
+            }
+        }
+        text = userId;
+    });
 
-        let res = await fetch("/api/1/add-task/", {
-            method : "POST",
-            headers: {
-                'X-CSRFToken': getCookie("csrftoken"),
-            },
-            body : body
-        })
-        text = String(res.status)
+
+    async function handleClick () {
+        setCookie("userId", "1", 1);
+        // let body = new FormData();
+        // body.append("title", "Finish todo app");
+
+        // let res = await fetch("/api/1/add-task/", {
+        //     method : "POST",
+        //     headers: {
+        //         'X-CSRFToken': getCookie("csrftoken"),
+        //     },
+        //     body : body
+        // })
+        // text = String(res.status)
     }
 
 </script>
