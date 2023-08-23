@@ -1,17 +1,28 @@
 <script>
 
+    export const csrfToken;
+
     let text = "";
 
     async function handleClick () {
-        let res = await fetch("/api");
-        text = await res.text()
+        let body = new FormData();
+        body.append("title", "Finish todo app")
+
+        let res = await fetch("/api/1/add-task/", {
+            method : "POST",
+            headers: {
+                'X-CSRFToken': csrfToken,
+            },
+            body : body
+        })
+        text = String(res.status)
     }
 
 
 </script>
 
 <button on:click={handleClick}>
-    Say hi!
+    Send task!
 </button>
 
 {#if text}
