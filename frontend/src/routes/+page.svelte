@@ -1,13 +1,13 @@
-<script>
+<script lang="ts">
     import '../styles.css';
     import Task from '../components/task.svelte'
-    import { setCookie, getCookie } from "./+server";
+    import { setCookie, getCookie } from "../cookie";
     import { onMount } from "svelte";
 
-    let text = "";
+    let userId = "";
 
     onMount(async () => {
-        let userId = getCookie("userId");
+        userId = getCookie("userId");
         if (userId === null) {
             const res = await fetch("/api/new-user/");
             if (res.status === 200) {
@@ -15,48 +15,45 @@
                 setCookie("userId", userId, 7);
             } else {
                 console.error("Error getting new user.");
-                userId = "No ID found!";
+                userId = "-1";
             }
         }
-        text = userId;
+        getTasks();
     });
 
+    let tasks: { taskId: string; title: string; }[] = [];
 
-    async function handleClick () {
-        // let body = new FormData();
-        // body.append("title", "Finish todo app");
-
-        // let res = await fetch("/api/1/add-task/", {
-        //     method : "POST",
-        //     headers: {
-        //         'X-CSRFToken': getCookie("csrftoken"),
-        //     },
-        //     body : body
-        // })
-        // text = String(res.status)
+    async function getTasks () {
+        const res = await fetch("/api/" + userId + "/tasks/");
+        if (res.status === 200) {
+            tasks = await res.json();
+            for (let task of tasks) {
+                console.log(task);
+            }
+            tasks.push({taskId: "", title: ""});
+        } else {
+            console.error("Error getting tasks.");
+        }
     }
+
+    function addEmpty(event: any) {
+        tasks[event.detail.index] = {taskId: event.detail.taskId, title: event.detail.title};
+        tasks = [...tasks, {taskId: "", title: ""}];
+    }
+    
 
 </script>
 
 <div>
-    <h1> todo </h1>
+    <h1 id="title"> todo </h1>
 </div>
 
-<Task userId=userId title="hello world"/>
-<Task userId=userId title="This is the thing I need to do!!! It needs to get done!!! This is supposed to get really long so I can test the feature!!!"/>
-<Task userId=userId title=""/>
-
-<button on:click={handleClick}>
-    Send task!
-</button>
-
-
-{#if text}
-    {text}
-{/if}
+{#each tasks as task, i}
+    <Task taskId={task.taskId} title={task.title} userId={userId} index={i} on:addNew={addEmpty}/>
+{/each}
 
 <style>
-    h1 {
+    #title {
         color: SeaGreen;
         text-align: center;
         font-size: 50px;

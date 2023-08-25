@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseBadRequest
 from api.models import Task, User
+import json
 
 
 def index(request):
@@ -19,9 +20,11 @@ def tasks(request, user_id):
     if request.method != "GET":
         return HttpResponseBadRequest("Expected GET request")
     
-    tasks = Task.objects.get(user=user_id)
+    tasks = Task.objects.filter(user=user_id)
+
+    res = json.dumps([{"taskId" : t.pk, "title" : t.title} for t in tasks])
     
-    return HttpResponse(", ".join([t.title for t in tasks]))
+    return HttpResponse(res)
 
 def add_task(request, user_id):
     if request.method != "POST":
@@ -36,6 +39,15 @@ def add_task(request, user_id):
     task = Task(user=user, title=title)
     task.save()
     
+    return HttpResponse(task.pk)
+
+def delete_task(request, task_id):
+    if request.method != "DELETE":
+        return HttpResponseBadRequest("Expected DELETE request")
+    
+    task = Task.objects.get(pk=task_id)
+    task.delete()
+
     return HttpResponse()
 
 # routes that we will want to have:

@@ -1,4 +1,4 @@
-export function getCookie(name: string): string | null {
+export function getCookie(name: string): any {
     const cookies = document.cookie.split("; ");
     for (let cookie of cookies) {
         if (cookie.startsWith(name)) {
