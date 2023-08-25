@@ -36,9 +36,14 @@
         }
     }
 
-    function addEmpty(event: any) {
+    function addNew(event: any) {
         tasks[event.detail.index] = {taskId: event.detail.taskId, title: event.detail.title};
         tasks = [...tasks, {taskId: "", title: ""}];
+    }
+
+    function deleteTask(event: any) {
+        tasks.splice(event.detail.index, 1);
+        tasks = tasks;
     }
     
 
@@ -49,7 +54,14 @@
 </div>
 
 {#each tasks as task, i}
-    <Task taskId={task.taskId} title={task.title} userId={userId} index={i} on:addNew={addEmpty}/>
+    <Task 
+        taskId={task.taskId} 
+        title={task.title} 
+        userId={userId} 
+        index={i} 
+        on:addNew={addNew} 
+        on:deleteTask={deleteTask}
+    />
 {/each}
 
 <style>

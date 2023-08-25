@@ -29,7 +29,9 @@
             body : body
         })
 
-        if (res.status != 200) {
+        if (res.status == 200) {
+            taskId = await res.text();
+        } else {
             console.error("Error posting new task");
         }
 
@@ -42,7 +44,10 @@
 
     async function deleteTask () {
         let res = await fetch("/api/delete-task/" + taskId + "/", {
-            method: "DELETE"
+            method: "DELETE",
+            headers: {
+                'X-CSRFToken': getCookie("csrftoken"),
+            }
         })
 
         if (res.status != 200) {
@@ -50,8 +55,7 @@
         }
 
         dispatch("deleteTask", {
-            index: index,
-            taskId: taskId
+            index: index
         })
     }
 
@@ -94,7 +98,8 @@
     }
 
     h3 {
-        margin: 0px;
+        margin-top: auto;
+        margin-bottom: auto;
         font-weight: 100;
         color: black;
         overflow: auto;
