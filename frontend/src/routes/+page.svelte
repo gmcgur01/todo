@@ -49,25 +49,38 @@
 
 </script>
 
-<div>
+<div id="topBar">
     <h1 id="title"> todo </h1>
 </div>
 
-{#each tasks as task, i}
-    <Task 
-        taskId={task.taskId} 
-        title={task.title} 
-        userId={userId} 
-        index={i} 
-        on:addNew={addNew} 
-        on:deleteTask={deleteTask}
-    />
-{/each}
+<div id="taskList">
+    {#each tasks as task, i}
+        <Task 
+            taskId={task.taskId} 
+            title={task.title} 
+            userId={userId} 
+            index={i} 
+            on:addNew={addNew} 
+            on:deleteTask={deleteTask}
+        />
+    {/each}
+</div>
+
 
 <style>
+    #topBar {
+        position: sticky;
+        top: 0px;
+        z-index: 100;
+        background-color: whitesmoke;
+    }
     #title {
         color: SeaGreen;
         text-align: center;
         font-size: 50px;
     }   
+    #taskList {
+        overflow: auto;
+        height: auto;
+    }
 </style>

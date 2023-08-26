@@ -91,6 +91,7 @@
         width: 500px;
         margin-left: auto;
         margin-right: auto;
+        margin-top: 5px;
         margin-bottom: 13px;
         border-radius: 3px;
         background-color: whitesmoke;
