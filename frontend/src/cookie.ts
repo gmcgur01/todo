@@ -1,3 +1,11 @@
+export async function getCsrfToken() {
+    const res = await fetch("/api/get-csrf-token/");
+    const data = await res.json();
+    setCookie("csrftoken", data.csrfToken);
+}
+
+
+
 export function getCookie(name: string): any {
     const cookies = document.cookie.split("; ");
     for (let cookie of cookies) {

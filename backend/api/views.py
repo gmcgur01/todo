@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
+from django.middleware.csrf import get_token
 from api.models import Task, User
 import json
 
@@ -50,9 +51,6 @@ def delete_task(request, task_id):
 
     return HttpResponse()
 
-# routes that we will want to have:
-
-## get all the tasks for a given user
-## create a new task 
-## update a task
-## delete a task
+def get_csrf_token(request):
+    csrf_token = get_token(request)
+    return JsonResponse({"csrfToken" : csrf_token})

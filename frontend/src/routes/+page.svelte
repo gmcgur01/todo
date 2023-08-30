@@ -1,12 +1,13 @@
 <script lang="ts">
     import '../styles.css';
     import Task from '../components/task.svelte'
-    import { setCookie, getCookie } from "../cookie";
+    import { getCsrfToken, setCookie, getCookie } from "../cookie";
     import { onMount } from "svelte";
 
     let userId = "";
 
     onMount(async () => {
+        getCsrfToken();
         userId = getCookie("userId");
         if (userId === null) {
             const res = await fetch("/api/new-user/");
