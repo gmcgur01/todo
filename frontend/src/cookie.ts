@@ -1,10 +1,13 @@
 export async function getCsrfToken() {
     const res = await fetch("/api/get-csrf-token/");
-    const data = await res.json();
-    setCookie("csrftoken", data.csrfToken);
+    if (res.status === 200) {
+        const data = await res.json();
+        setCookie("csrftoken", data.csrfToken);
+    } else {
+        console.error("Unable to retrieve CSRF token from backend");
+    }
+    
 }
-
-
 
 export function getCookie(name: string): any {
     const cookies = document.cookie.split("; ");
